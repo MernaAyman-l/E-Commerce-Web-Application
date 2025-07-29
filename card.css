@@ -1,0 +1,43 @@
+﻿
+body {
+    background-image: url(onlineshopping2.jpg);
+    background-size: cover;
+    background-position:top;
+    background-repeat: no-repeat;
+}
+h3 {
+    font-weight: bold;
+}
+
+h6 {
+    text-decoration: line-through; 
+    display: inline-block; 
+}
+
+main {
+    width: 40%; 
+    margin-top: 20px; 
+}
+
+table {
+    box-shadow: 1px 1px 10px rgba(1 1 1 /15); 
+}
+thead {
+    background-color: gray; 
+    text-align: center; 
+}
+
+tbody {
+    text-align: center; 
+}
+
+center a{
+   font-size:larger;
+   text-decoration:none;
+   color:#ae0ef3;
+}
+center a:hover{
+    text-decoration:underline;
+    color:#140be1;
+}
+

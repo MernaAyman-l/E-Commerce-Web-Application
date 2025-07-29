@@ -1,0 +1,53 @@
+﻿
+
+body {
+    background-color: #f2ebff; 
+    font-family: Arial, sans-serif;
+}
+
+
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    border: 2px solid #6a0572; 
+    padding: 20px; 
+}
+
+
+
+
+h2 {
+    color:#8651e4; 
+    text-align: center;
+}
+
+img {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+    height: auto;
+}
+
+h4 {
+    font-size:large;
+    text-align: center;
+    margin-bottom:5px;
+}
+
+.price,
+.size {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+a {
+    color: #6a0572; 
+    text-decoration: none;
+    font-size:1.2em;
+    font-weight:bolder;
+
+}
+    a:hover {
+        text-decoration:underline;
+        color:blue;
+    }

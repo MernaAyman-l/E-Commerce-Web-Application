@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>add clothes</title>
+</head>
+<style>
+    body {
+        background-image: url(background3.jpg);
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+    a {
+        font-size: large;
+        text-decoration: none;
+        color:#360cec;
+    }
+    a:hover{
+        text-decoration:underline;
+        color:#08a3e7;
+
+    }
+</style>
+<body>
+    <center>
+        <div class="main">
+            <form action="insert.php" method="post" enctype="multipart/form-data">
+                <h2>add clothes</h2>
+                name:<input type="text" name="name"><br><br>
+                <label for="cat">Choose category</label>
+                    <select id="cat" name="cat">
+                        <option value="dress">dress</option>
+                        <option value="shirt">shirt</option>
+                        <option value="pants">pants</option>
+                        <option value="jacket">jacket</option>
+                    </select><br><br>
+                price:<input type="text" name="price"><br><br>
+                size small:<input type="number" min="0" name="small"><br><br>
+                size medium:<input type="number" min="0" name="medium"><br><br>
+                size large:<input type="number" min="0" name="large"><br><br>
+                <input type="file" id="file" name="img"><br>
+                is this item trendy: YES<input type="checkbox" name="trendy" value="1">    NO<input type="checkbox" name="trendy" value="0"><br>
+                <button name="upload">upload clothes</button><br>
+                <a href="view admin.php">view all products</a>
+            </form>
+        </div>
+    </center>
+</body>
+</html>
