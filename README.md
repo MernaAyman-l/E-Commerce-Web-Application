@@ -56,3 +56,7 @@ A full-stack PHP and MySQL e-commerce clothing web application (`Shopping_Projec
 1. Import `saproject (4).sql` into MySQL/MariaDB (database name: `saproject`).
 2. Update database connection settings in `config.php` if your MySQL host, username, password, or database name differs.
 3. Place the project folder inside your PHP web server directory (such as **XAMPP** `htdocs` or **Laragon** `www`), verify `vendor/` is present, and open `index.php` in your browser.
+
+## My Contributions (Team Project)
+- **Frontend Development:** Built and styled the user-facing pages, forms, product cards, cart/order views, and layouts across HTML/CSS and PHP views.
+- **Password & Token Hashing:** Implemented secure password hashing (`password_hash` / `password_verify`) during user registration and login, as well as hashing refresh tokens before storing them in the database.
