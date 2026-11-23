@@ -1,5 +1,8 @@
 # Online Clothing Store & Management System
 
+> [!WARNING]
+> **Security review required before sharing or deployment.** The current public source contains hard-coded cryptographic/JWT keys and has SQL queries that interpolate user-controlled values. Treat the committed keys as compromised: replace them with newly generated secrets stored outside Git, and review the full Git history because changing the latest files does not erase previously committed values. Keep this project as an academic prototype only; do not use real customer data or payments.
+
 A university team project built with **PHP, MySQL, HTML, and CSS**. The application demonstrates an online clothing storefront with account registration and login, product browsing, a shopping cart, checkout, customer feedback, and administrator product/order management.
 
 > **Project type:** Academic prototype. It is intended for learning and demonstration, not for processing real payments or personal data.
