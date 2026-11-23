@@ -1,62 +1,138 @@
-# Shopping Project — Online Clothing Storefront & Management System
+# Online Clothing Store & Management System
 
-A full-stack PHP and MySQL e-commerce clothing web application (`Shopping_Project`) featuring user registration and login, `JWT` session token handling (`firebase/php-jwt`), `AES-256-CBC` price encryption/decryption (`openssl.php`), product catalog browsing, search, category and trendy filtering, shopping cart with multi-tier discount logic, stock validation per size, order checkout (`bought`), post-purchase buyer feedback (`feedback`), and catalog/order management views.
+A university team project built with **PHP, MySQL, HTML, and CSS**. The application demonstrates an online clothing storefront with account registration and login, product browsing, a shopping cart, checkout, customer feedback, and administrator product/order management.
 
-## Repository & File Architecture
+> **Project type:** Academic prototype. It is intended for learning and demonstration, not for processing real payments or personal data.
 
-### Authentication, Session & Token Management
-- `index.php`: User login page that verifies submitted credentials using `password_verify()`, handles admin redirection when `email === 'admin'`, generates `HS256` JWT `access_token` and `refresh_token` payloads via `Firebase\JWT\JWT`, stores a hashed refresh token (`password_hash`) in `users.refresh_token`, and stores tokens in `$_SESSION`.
-- `register.php`: User sign-up page (`Username`, `Email`, `Age`, `Password`) that hashes passwords with `password_hash(..., PASSWORD_DEFAULT)`, checks whether the email already exists in `users`, and inserts new accounts.
-- `refresh_token.php`: Validates the session `refresh_token` using `JWT::decode`, checks expiration (`exp < time()`), fetches the user from `users`, issues a new `access_token` (`60` seconds) and rotated `refresh_token` (`+7 days`), updates `users.refresh_token` with a new hash, and redirects to `redirect` (defaulting to `index.php`).
-- `logout.php`: Calls `session_start()` and `session_destroy()` and redirects to `index.php`.
+## Features
 
-### Encryption & Database Layer
-- `config.php`: Establishes the `mysqli` connection to local database `saproject` (`localhost`, user `root`, empty password by default).
-- `openssl.php`: Defines the `openssl` helper class using `AES-256-CBC` (`encrypt()`, `decrypt()`, and `getIv()`), generating a random initialization vector (`IV`) per encryption operation and prepending it before base64 encoding.
-- `saproject (4).sql`: MySQL/MariaDB database dump defining `addcard`, `bought`, `clothes`, `feedback`, and `users` tables along with sample rows.
-- `composer.json`, `composer.lock`, `vendor/`: Composer configuration and dependencies (`firebase/php-jwt` `^6.11`).
+### Customer experience
+- User registration and login.
+- Product catalog with category, keyword, and trending filters.
+- Product details, available sizes, and stock quantities.
+- Shopping cart with quantity-based and promotional discount rules.
+- Checkout flow with order records and stock updates.
+- Feedback submission for purchased products.
+- Profile information updates.
 
-### Storefront, Cart, Checkout & Feedback
-- `home.php`: Protected storefront view (`access_token` check with fallback to `refresh_token.php?redirect=home.php` or `index.php`) supporting keyword search across `CONCAT(name, cat)`, category filtering (`dress`, `shirt`, `pants`, `jacket`), trendy filtering (`trendy = 1`), and listing all clothing items with decrypted prices, size selection (`small`, `medium`, `large`), quantity input, add-to-cart forms, feedback links, and product detail links.
-- `trendy_clothes.php`: Displays items marked with `trendy = 1` from `clothes`.
-- `details.php`: Displays item details (`image`, `name`, decrypted `price`, stock counts for `small`, `medium`, `large`, and `TRENDY` badge if enabled) along with submitted customer feedback entries (`Username`, `feedback`, `quality_score`) and a back link.
-- `isert_card.php`: Validates `access_token`, checks available stock in `clothes` for the requested `size` and `quantity`, alerts if stock is insufficient, or inserts the item into `addcard` for the authenticated `user_id` before redirecting to `card.php`.
-- `card.php`: Lists items in `addcard` for the current `user_id` with decrypted prices, calculates `total_before_dis` and `total_after_dis` based on quantity (`number_of_pieces > 3`), subtotal (`total_before_dis >= 1000`), and trendy item count (`trendy >= 1`), allows item removal via `del_card.php?id=...`, and links to `buy.php?id=$total_after_dis`.
-- `del_card.php`: Deletes a cart entry by `id` from `addcard` and redirects to `card.php`.
-- `buy.php`: Validates `access_token`, verifies stock availability for every item in `addcard` across its selected size, generates an `order_id` (`$uid . date("Y/m/d") . date("h:i:sa")`), deducts purchased quantities from `clothes`, records orders in `bought`, clears the user's `addcard` rows, and redirects to `action_page2.html`.
-- `action_page2.html`: Order confirmation screen (`your order is on the way...`) with a return link to `home.php`.
-- `feedback.php`: Validates `access_token`, verifies that the user has purchased `item_id` in `bought` and has not already submitted feedback for that `user_id` and `item_id` in `feedback`, renders a rating form (`Good = 2`, `Okay = 1`, `Bad = 0` + `suggestion` textarea), inserts the review into `feedback`, and redirects to `practice_ac.html`.
-- `practice_ac.html`: Feedback confirmation screen (`your feedback submitted successefully`) with a link back to `home.php`.
+### Administration
+- Admin-facing product catalog.
+- Add, edit, and delete clothing items.
+- View customer orders and order details.
 
-### Profile, Catalog & Order Management
-- `edit.php`: Protected profile update view allowing authenticated users to update `Username`, `Email`, and `Age` in `users`.
-- `view admin.php`: Catalog management page with search, category filter, trendy filter, and product cards with `delete`, `edit`, and `details` links plus navigation to `add clothes.html` and `view orders.php`.
-- `add clothes.html` & `insert.php`: Form and handler to add clothing items (`name`, `cat`, encrypted `price`, `small`, `medium`, `large`, uploaded image moved to `images/`, and `trendy`) into `clothes`.
-- `editclothes.php` & `update.php`: Form and handler to edit clothing item fields, decrypt/re-encrypt `price`, optionally replace and unlink the previous image in `images/`, and update `clothes`.
-- `delete.php`: Deletes an item's image file via `unlink()` and removes the row from `clothes`.
-- `view orders.php` & `order details.php`: Lists distinct orders from `bought` with buyer username, clickable `order_id`, and `total_price`, and displays individual ordered items, sizes, and quantities per `order_id`.
+### Authentication and application logic
+- Password hashing and verification using PHP `password_hash()` and `password_verify()`.
+- JWT access and refresh token flow using `firebase/php-jwt`.
+- Refresh-token hashes stored in the users table.
+- Product price encryption/decryption using PHP OpenSSL and AES-256-CBC.
 
-### Static Assets & Styling
-- `styles.css`, `home1.css`, `card.css`, `details.css`, `action_page2.html`, `add clothes.html`, `practice_ac.html`: Page layouts, backgrounds, card styling, form styling, and confirmation views.
-- `images/`, `pics/`, `background2.jpg`, `background3.jpg`, `background10.jpg`, `delivery.jpg`, `onlineshopping2.jpg`, `good1.png`, `neutral1.png`, `bad.png`: Visual assets and product/UI imagery.
+## Technology Stack
 
-## Database Schema Overview (`saproject`)
-- `users`: `Id`, `Username`, `Email`, `Age`, `Password`, `refresh_token`.
-- `clothes`: `id`, `name`, `cat`, `price` (encrypted string), `small`, `medium`, `large`, `image`, `trendy`.
-- `addcard`: `id`, `user_id`, `item_id`, `name`, `price`, `size`, `quantity`, `trendy`.
-- `bought`: `id`, `order_id`, `user_id`, `item_id`, `name`, `quantity`, `total_price`, `size`.
-- `feedback`: `id`, `user_id`, `item_id`, `order_id`, `feedback`, `quality_score`.
+| Layer | Technologies |
+| --- | --- |
+| Frontend | HTML5, CSS3, Bootstrap |
+| Backend | PHP |
+| Database | MySQL / MariaDB |
+| Database access | MySQLi |
+| Authentication | PHP Sessions, JWT |
+| Cryptography | PHP password hashing, OpenSSL AES-256-CBC |
+| Dependency management | Composer |
 
-## Tools & Technologies
-- **Backend:** PHP (`mysqli`, PHP Sessions) & Composer (`firebase/php-jwt`)
-- **Database:** MySQL / MariaDB (`saproject`)
-- **Frontend:** HTML5, CSS3, Bootstrap 5 (`CDN` in select pages), Google Fonts (`Open Sans` in `feedback.php`)
+## Main Project Structure
 
-## How to Run Locally
-1. Import `saproject (4).sql` into MySQL/MariaDB (database name: `saproject`).
-2. Update database connection settings in `config.php` if your MySQL host, username, password, or database name differs.
-3. Place the project folder inside your PHP web server directory (such as **XAMPP** `htdocs` or **Laragon** `www`), verify `vendor/` is present, and open `index.php` in your browser.
+| File / Folder | Purpose |
+| --- | --- |
+| `index.php`, `register.php`, `logout.php` | Login, registration, and logout |
+| `refresh_token.php` | Refresh-token flow |
+| `home.php`, `trendy_clothes.php`, `details.php` | Storefront and product browsing |
+| `isert_card.php`, `card.php`, `del_card.php`, `buy.php` | Cart and checkout workflow |
+| `feedback.php` | Customer feedback |
+| `view admin.php`, `add clothes.html`, `insert.php`, `editclothes.php`, `update.php`, `delete.php` | Product administration |
+| `view orders.php`, `order details.php` | Order management |
+| `config.php` | Database connection |
+| `openssl.php` | Product-price encryption helper |
+| `saproject (4).sql` | Database schema and sample data |
+| `composer.json`, `composer.lock` | PHP dependency definitions |
+| `images/`, `pics/`, CSS files | Images and styling assets |
 
-## My Contributions (Team Project)
-- **Frontend Development:** Built and styled the user-facing pages, forms, product cards, cart/order views, and layouts across HTML/CSS and PHP views.
-- **Password & Token Hashing:** Implemented secure password hashing (`password_hash` / `password_verify`) during user registration and login, as well as hashing refresh tokens before storing them in the database.
+## Database Overview
+
+Import the supplied SQL dump to create the `saproject` database. It contains these main tables:
+
+- `users` — customer and administrator account records.
+- `clothes` — product details, encrypted prices, and stock by size.
+- `addcard` — shopping-cart entries.
+- `bought` — purchased items and order records.
+- `feedback` — customer reviews and quality scores.
+
+## Run Locally
+
+### Requirements
+- PHP with MySQLi and OpenSSL extensions enabled.
+- MySQL or MariaDB.
+- Composer.
+- A local PHP environment such as XAMPP or Laragon.
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/MernaAyman-l/E-Commerce-Web-Application.git
+cd E-Commerce-Web-Application
+```
+
+### 2. Install PHP dependencies
+
+```bash
+composer install
+```
+
+The project uses `firebase/php-jwt`, declared in `composer.json`.
+
+### 3. Create and import the database
+
+1. Start MySQL/MariaDB.
+2. Create a database named `saproject` (or import the dump, which creates the tables for that database).
+3. Import `saproject (4).sql` using phpMyAdmin or the MySQL command line.
+
+### 4. Configure the database connection
+
+Update `config.php` to use your local database host, username, password, and database name. Do not commit real credentials.
+
+### 5. Configure application secrets
+
+The current source contains hard-coded cryptographic keys. For a local demonstration, replace them with new values kept outside version control (for example, environment variables). Do not reuse any key or sample credential from the repository.
+
+### 6. Start the local web server
+
+Place the project folder under your local server's web root (for example, XAMPP's `htdocs` or Laragon's `www`), start Apache and MySQL, then open the project through your local server, for example:
+
+```text
+http://localhost/E-Commerce-Web-Application/
+```
+
+## My Contributions
+
+This was a team project. My contributions included:
+
+- Developing and styling frontend pages, forms, product cards, and cart/order views using HTML, CSS, and PHP.
+- Implementing password hashing and verification for user registration and login.
+- Hashing refresh tokens before storing them in the database.
+
+## Security Notes & Known Limitations
+
+This repository is an educational prototype and has not been presented as production-hardened software. A review of the current source shows areas that should be addressed before any real deployment:
+
+- Cryptographic keys are hard-coded in the PHP source. Rotate them and move secrets to environment-based configuration; removing a key from the latest file does not remove it from Git history.
+- Several database queries interpolate user-controlled values into SQL. Use prepared statements consistently to reduce SQL-injection risk.
+- Review session handling, token validation, cookie flags, expiration/rotation, and authorization checks across every protected page.
+- Review file-upload validation and filesystem permissions for product images.
+- Price encryption alone does not provide integrity protection. Use authenticated encryption or a well-reviewed design, with keys stored outside the repository.
+- The included SQL dump contains demonstration records. Never use sample credentials or data in a real environment.
+
+## Learning Outcomes
+
+- Building a database-backed PHP web application.
+- Implementing user authentication and token-based session flows.
+- Working with relational data for products, stock, carts, orders, and feedback.
+- Creating customer-facing and administrator-facing web pages.
+- Applying basic cryptographic operations and identifying web-application security concerns.
